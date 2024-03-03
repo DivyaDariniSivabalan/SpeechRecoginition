@@ -1,0 +1,25 @@
+import speech_recognition as sr
+import pycld2 as cld2
+
+def detect_language(audio_file):
+    recognizer = sr.Recognizer()
+
+    # Load audio file
+    with sr.AudioFile(audio_file) as source:
+        audio_data = recognizer.record(source)
+
+    # Convert speech to text
+    try:
+        spoken_text = recognizer.recognize_google(audio_data)
+        _, _, details = cld2.detect(spoken_text)
+        language = details[0][1]
+        return language
+    except sr.UnknownValueError:
+        print("Google Speech Recognition could not understand audio")
+    except sr.RequestError as e:
+        print(f"Could not request results from Google Speech Recognition service; {e}")
+
+# Example usage
+audio_file = "path_to_your_audio_file.wav"
+detected_language = detect_language(audio_file)
+print("Detected language:", detected_language)
