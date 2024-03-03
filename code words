@@ -1,0 +1,43 @@
+import pyaudio
+import speech_recognition as sr
+
+def recognize_speech():
+    recognizer = sr.Recognizer()
+
+    with sr.Microphone() as source:
+        print("Listening...")
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.listen(source)
+
+    try:
+        text = recognizer.recognize_sphinx(audio)
+        return text.lower()
+    except sr.UnknownValueError:
+        return "Sorry, I couldn't understand what you said."
+    except sr.RequestError:
+        return "Sorry, there was an error with the speech recognition service."
+
+def process_command(command):
+    if "hello" in command:
+        return "Hello! How can I assist you?"
+    elif "goodbye" in command:
+        return "Goodbye!"
+    elif "weather" in command:
+        return "The weather is sunny today."
+    else:
+        return "Sorry, I didn't understand that command."
+
+def main():
+    while True:
+        command = recognize_speech()
+        print("You said:", command)
+        
+        if "exit" in command:
+            print("Goodbye!")
+            break
+            
+        response = process_command(command)
+        print("Response:", response)
+
+if __name__ == "__main__":
+    main()
