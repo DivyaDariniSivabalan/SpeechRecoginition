@@ -1,0 +1,39 @@
+import speech_recognition as sr
+
+def recognize_speech():
+    recognizer = sr.Recognizer()
+    
+    with sr.Microphone() as source:
+        print("Please ask a question:")
+        audio = recognizer.listen(source)
+    
+    try:
+        text = recognizer.recognize_google(audio)
+        return text.lower()
+    except sr.UnknownValueError:
+        print("Sorry, I could not understand the audio.")
+        return None
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        return None
+
+def analyze_question(question):
+    if "what" in question:
+        return "Type of question: 'What'"
+    elif "how" in question:
+        return "Type of question: 'How'"
+    elif "why" in question:
+        return "Type of question: 'Why'"
+    elif "when" in question:
+        return "Type of question: 'When'"
+    elif "who" in question:
+        return "Type of question: 'Who'"
+    else:
+        return "Unknown type of question"
+
+if __name__ == "__main__":
+    question = recognize_speech()
+    if question:
+        print("You asked:", question)
+        question_type = analyze_question(question)
+        print(question_type)
